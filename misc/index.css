@@ -1,0 +1,14 @@
+body {
+    font-family: monospace;
+    background-color: navy;
+    text-align: center;
+    justify-content: center;
+    justify-items: center;
+    background-image: url("img/th-3039596130.jpg");
+    background-repeat: repeat;
+    }
+
+h1, p {
+  color: yellow;
+  font-family: Lato;
+}
