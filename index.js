@@ -29,11 +29,14 @@ app.use((req, res, next) => {
    next()
 })
 
-app.get('/', (req, res) => {
-   res.send('Hello World!')
+app.get('/', (req, res) => {           // Render form
+   res.render('form', {
+    title: 'Parse HTTP GET data',
+    data: req.query
+   })
 })
 
-app.get('/hello', (req, res) => {          // Page '/' route
+app.get('/hello', (req, res) => {      // Page '/' route
   res.render('message', { title: 'Hello, Azrubael!' })
 })
 
