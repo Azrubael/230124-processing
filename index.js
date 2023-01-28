@@ -4,9 +4,16 @@ import formidable from 'formidable'
 import { fileURLToPath } from 'url'
 import { dirname, parse, sep } from 'path'
 
+import { deepReadDir, statDir, cleanDir } from './cleaner.js'
+
 function checkDigit(str) {
   	let hasNumber = /\d+/
   	return hasNumber.test(str)
+}
+
+function checkEmail(str) {
+  	let isEmail = /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/
+  	return (!isEmail.test(str))
 }
 
 const __dirname = dirname(fileURLToPath( import.meta.url )) + sep
@@ -19,8 +26,6 @@ const cfg = {
 		uploads: __dirname + 'uploads' + sep
   	}
 }
-
-// console.dir(cfg, { depth: null, color: true })
 
 const app = express()                 // Express initiation
 app.disable('x-powered-by')           // do not identify express
@@ -53,9 +58,14 @@ app.all('/', (req, res, next) => {    // Render form
 				data.uploadto = files.image.filepath
 				data.imageurl = '/' + parse(files.image.filepath).base
 			}
-			if (checkDigit(data.name) || data.name == '' || data.job == '') {
-				data.name = 'Wrong input'
-				data.job = 'Wrong input'
+			if (checkDigit(data.name) || data.name == '') {
+				data.name = 'Wrong name input'
+			}
+			if (checkDigit(data.job) || data.job == '') {
+				data.job = 'Wrong job input'
+			}
+			if (checkEmail(data.email)) {
+				data.email = 'Wrong email input'
 			}
 			res.render('form', { title: 'Parse HTTP POST data', data })
 		})
@@ -71,6 +81,8 @@ app.get('/hello', (req, res) => {      // Page '/' route
 app.use((req, res) => {
    res.status(404).send('Not found...')
 })
+
+let r = await cleanDir('uploads', 12)
 
 app.listen(cfg.port, () => {          // Start server
   	console.log(`This application listening at http://localhost:${ cfg.port }`)
